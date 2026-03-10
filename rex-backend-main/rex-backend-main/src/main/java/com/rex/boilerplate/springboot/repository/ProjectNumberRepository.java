@@ -1,0 +1,17 @@
+package com.rex.boilerplate.springboot.repository;
+
+import com.rex.boilerplate.springboot.model.ProjectNumber;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface ProjectNumberRepository
+        extends JpaRepository<ProjectNumber, Long>, JpaSpecificationExecutor<ProjectNumber> {
+    Optional<ProjectNumber> findByProjectId(UUID projectId);
+
+    Optional<ProjectNumber> findByProjectNumber(String projectNumber);
+}

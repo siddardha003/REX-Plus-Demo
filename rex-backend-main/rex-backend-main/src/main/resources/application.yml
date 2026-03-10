@@ -1,0 +1,93 @@
+server:
+  http2:
+    enabled: true
+
+spring:
+  security:
+    user:
+      name: admin
+      password: secret123
+  datasource:
+    # url: jdbc:postgresql://localhost:5432/REX-Dev
+    # username: ${POSTGRES_USER:vishal}
+    # password: ${POSTGRES_PASSWORD:Password@123}
+    url: jdbc:postgresql://localhost:5432/REX-Plus
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:siddhu@1020}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:seed-data.sql,classpath:views.sql
+      separator: ^;
+    hikari:
+      pool-name: SpringBootBoilerplateHikariPool
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    defer-datasource-initialization: false
+    properties:
+      hibernate.jdbc.batch_size: 50
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.generate_statistics: false 
+      hibernate.jdbc.time_zone: UTC
+      hibernate.hbm2ddl.create_namespaces: true     
+    open-in-view: false
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false  
+  jta:
+    enabled: false
+
+springdoc:
+  show-actuator: true
+
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org.springframework: INFO
+    com.rex.boilerplate.springboot: INFO
+
+jwt:
+  secretKey: secret
+  issuer: www.velavast.com
+  expirationMinute: 10
+
+swagger:
+  contact-name: vishal sutari
+  contact-mail: vishalsutari@velavast.com
+  contact-url: https://www.velavast.com
+  app-name: Spring Boot Boilerplate Project
+  app-description: "Spring Boot Boilerplate is a starter kit. This project includes : Spring Boot(3.4.0), Spring Data JPA, Spring Validation, Spring Security + JWT Token, PostgreSQL, Mapstruct, Lombok, Swagger (Open API)"
+  app-version: 3.4.0
+  app-license-url: https://www.apache.org/licenses/LICENSE-2.0.html
+  app-license: Apache 2.0
+
+app:
+  image:
+    max-size: 5242880
+    max-width: 1024
+    max-height: 1024
+    quality: 0.8
+    storage-path: uploads
+
+# ✅ Updated CORS (comma-separated)
+# Include QA origin when needed by uncommenting it
+cors:
+  # allowed-origins: http://localhost:4200 # For Dev
+  allowed-origins: http://10.8.0.1:4200 # For QA
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
