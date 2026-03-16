@@ -18,5 +18,6 @@ public class DelegatedInvoiceDTO {
     private BigDecimal invoiceTotal;
     private String currency;
     private String status;
-
+    private String delegatedTo;
+    private Long delegatedUserId;
 }

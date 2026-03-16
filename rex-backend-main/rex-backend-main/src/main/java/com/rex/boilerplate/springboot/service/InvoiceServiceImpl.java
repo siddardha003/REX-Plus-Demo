@@ -6,6 +6,7 @@ import com.rex.boilerplate.springboot.dto.DelegatedInvoiceResponseDTO;
 import com.rex.boilerplate.springboot.model.InvoiceResponsibility;
 import com.rex.boilerplate.springboot.model.InvoiceStatus;
 import com.rex.boilerplate.springboot.model.Invoices;
+import com.rex.boilerplate.springboot.model.RexUser;
 import com.rex.boilerplate.springboot.repository.InvoiceRepository;
 import com.rex.boilerplate.springboot.repository.InvoiceResponsibilityRepository;
 import com.rex.boilerplate.springboot.repository.InvoiceStatusRepository;
@@ -115,6 +116,11 @@ public class InvoiceServiceImpl implements InvoiceService {
                 continue;
             }
 
+
+            RexUser delegateUser = rexUserRepository
+                    .findById(activeUserId)
+                    .orElseThrow();
+
             Invoices invoice = invoiceRepository
                     .findById(invoiceId)
                     .orElseThrow(() -> new RuntimeException("Invoice not found"));
@@ -133,6 +139,8 @@ public class InvoiceServiceImpl implements InvoiceService {
                     .invoiceTotal(invoice.getInvoiceTotalGross())
                     .currency(invoice.getCurrency())
                     .status(status)
+                    .delegatedUserId(activeUserId)
+                    .delegatedTo(delegateUser.getFullname())
                     .build();
 
             invoices.add(dto);
