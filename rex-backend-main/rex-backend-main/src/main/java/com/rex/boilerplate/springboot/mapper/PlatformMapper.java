@@ -3,8 +3,8 @@ package com.rex.boilerplate.springboot.mapper;
 import com.rex.boilerplate.springboot.dto.PlatformDto;
 import com.rex.boilerplate.springboot.model.Platform;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
 import java.util.List;
 
 /**
@@ -17,7 +17,6 @@ public interface PlatformMapper {
 
     PlatformDto toDto(Platform entity);
 
-    @Mapping(target = "activePeriod", ignore = true)
     Platform toEntity(PlatformDto dto);
 
     List<PlatformDto> toDtoList(List<Platform> entities);

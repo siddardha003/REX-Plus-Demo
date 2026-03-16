@@ -1,7 +1,7 @@
 -- View 1: beneficiary_to_platform_current
 DROP VIEW IF EXISTS rexbase.beneficiary_to_platform_current CASCADE^;
 CREATE OR REPLACE VIEW rexbase.beneficiary_to_platform_current AS
-SELECT 
+SELECT
     plt.id AS platform_id,
     ben.id AS beneficiary_id,
     plt.displayname AS platform,
@@ -18,7 +18,7 @@ FROM rexbase.beneficiary ben
 JOIN rexbase.beneficiary_orgdata borg ON borg.beneficiary_id = ben.id
 JOIN rexbase.employer emp ON emp.id = borg.employer_id
 JOIN rexbase.platform plt ON plt.id = emp.platform_id
-WHERE CURRENT_DATE >= borg.validfrom 
+WHERE CURRENT_DATE >= borg.validfrom
   AND CURRENT_DATE <= COALESCE(borg.validthrough, '2999-12-31'::date)^;
 
 ALTER VIEW rexbase.beneficiary_to_platform_current OWNER TO postgres^;
@@ -28,7 +28,7 @@ COMMENT ON VIEW rexbase.beneficiary_to_platform_current IS 'list of all benefici
 DROP VIEW IF EXISTS rexbase.picklist_members CASCADE^;
 CREATE OR REPLACE VIEW rexbase.picklist_members AS
 WITH beneficiary_list AS (
-    SELECT 
+    SELECT
         bl.picklist_id,
         'INTERNAL'::text AS member_type,
         ben.listname,
@@ -37,11 +37,11 @@ WITH beneficiary_list AS (
     JOIN rexbase.beneficiary ben ON ben.id = bl.beneficiary_id
     JOIN rexbase.beneficiary_orgdata borg ON borg.beneficiary_id = ben.id
     JOIN rexbase.employer emp ON emp.id = borg.employer_id
-    WHERE CURRENT_DATE >= borg.validfrom 
+    WHERE CURRENT_DATE >= borg.validfrom
       AND CURRENT_DATE <= COALESCE(borg.validthrough, '2999-12-31'::date)
 ),
 guest_list AS (
-    SELECT 
+    SELECT
         gl.picklist_id,
         'EXTERNAL'::text AS member_type,
         gu.listname,
@@ -70,7 +70,7 @@ END;
 
 CREATE OR REPLACE VIEW rexbase.rexuser_rights AS
 WITH rightscomplete AS (
-    SELECT 
+    SELECT
         rexusr.id AS rexuser_id,
         rexusr.listname,
         rexusr.activefrom AS user_activefrom,
@@ -99,15 +99,15 @@ WITH rightscomplete AS (
     JOIN rexbase.userright           rights      ON rights.id              = role_rights.userright_id
     JOIN rexbase.userrole            roles       ON roles.id               = role_rights.userrole_id
 )
-SELECT DISTINCT 
+SELECT DISTINCT
     rexuser_id,
     listname,
     rightcode
 FROM rightscomplete
-WHERE user_active 
-  AND role_active 
-  AND right_active 
-  AND roleright_active 
+WHERE user_active
+  AND role_active
+  AND right_active
+  AND roleright_active
   AND userrole_active^;
 
 ALTER VIEW rexbase.rexuser_rights OWNER TO postgres^;

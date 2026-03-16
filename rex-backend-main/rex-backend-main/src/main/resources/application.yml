@@ -11,7 +11,7 @@ spring:
     # url: jdbc:postgresql://localhost:5432/REX-Dev
     # username: ${POSTGRES_USER:vishal}
     # password: ${POSTGRES_PASSWORD:Password@123}
-    url: jdbc:postgresql://localhost:5432/REX-Plus
+    url: jdbc:postgresql://localhost:5432/Rex-Plus-APIs
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:siddhu@1020}
   sql:

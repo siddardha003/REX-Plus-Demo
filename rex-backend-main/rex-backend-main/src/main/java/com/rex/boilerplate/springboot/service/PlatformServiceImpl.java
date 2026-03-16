@@ -48,15 +48,17 @@ public class PlatformServiceImpl implements PlatformService {
     @Override
     @Transactional
     public PlatformDto update(Long id, PlatformDto dto) {
+
         Platform existing = platformRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Platform not found with id: " + id));
-        // Map incoming fields
+
         existing.setPlatformUuid(dto.getPlatformUuid());
         existing.setDisplayName(dto.getDisplayName());
-        existing.setActiveFrom(dto.getActiveFrom());
-        existing.setActiveThrough(dto.getActiveThrough());
+        existing.setActive(dto.getActive());
         existing.setUpdatedAt(dto.getUpdatedAt());
+
         Platform updated = platformRepository.save(existing);
+
         return platformMapper.toDto(updated);
     }
 

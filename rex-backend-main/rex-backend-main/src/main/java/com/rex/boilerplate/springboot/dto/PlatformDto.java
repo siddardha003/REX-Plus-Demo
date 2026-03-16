@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Data Transfer Objects for REXBASE entities
+ * Data Transfer Object for Platform
  */
 
 @Data
@@ -14,11 +14,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlatformDto {
+
     private Long id;
+
     private UUID platformUuid;
+
     private String displayName;
-    private java.time.LocalDate activeFrom;
-    private java.time.LocalDate activeThrough;
+
+    private Boolean active;
+
     private Instant createdAt;
+
     private Instant updatedAt;
 }
