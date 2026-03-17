@@ -1,11 +1,9 @@
 package com.rex.boilerplate.springboot.controller;
 
-import com.rex.boilerplate.springboot.model.Occasion;
+import com.rex.boilerplate.springboot.model.Occasions;
 import com.rex.boilerplate.springboot.repository.OccasionRepository;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +25,7 @@ public class OccasionController {
 
         Long platformId = 101L;
 
-        List<Occasion> occasions = occasionRepository.findByPlatform_Id(platformId);
+        List<Occasions> occasions = occasionRepository.findByPlatform_Id(platformId);
 
         List<Map<String,Object>> data = occasions.stream().map(o -> {
             Map<String,Object> map = new LinkedHashMap<>();

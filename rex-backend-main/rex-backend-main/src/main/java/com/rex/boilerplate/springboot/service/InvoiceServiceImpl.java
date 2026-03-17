@@ -5,7 +5,6 @@ import com.rex.boilerplate.springboot.dto.DelegatedInvoiceMetaDTO;
 import com.rex.boilerplate.springboot.dto.DelegatedInvoiceResponseDTO;
 import com.rex.boilerplate.springboot.model.InvoiceResponsibility;
 import com.rex.boilerplate.springboot.model.InvoiceStatus;
-import com.rex.boilerplate.springboot.model.Invoices;
 import com.rex.boilerplate.springboot.model.RexUser;
 import com.rex.boilerplate.springboot.repository.InvoiceRepository;
 import com.rex.boilerplate.springboot.repository.InvoiceResponsibilityRepository;
@@ -21,9 +20,13 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @Transactional
@@ -90,56 +93,48 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         Long rexUserId = 1L; // temporary
 
-        List<InvoiceResponsibility> responsibilities =
-                responsibilityRepository.findByRexuserIdAndIsActiveFalse(rexUserId);
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Object[]> results =
+                responsibilityRepository.findDelegatedInvoices(
+                        rexUserId,
+                        from,
+                        to,
+                        pageable
+                );
 
         List<DelegatedInvoiceDTO> invoices = new ArrayList<>();
 
-        for (InvoiceResponsibility responsibility : responsibilities) {
+        for (Object[] row : results.getContent()) {
 
-            Long invoiceId = responsibility.getInvoiceId();
-
-            Optional<InvoiceResponsibility> activeResponsibility =
-                    responsibilityRepository.findByInvoiceIdAndIsActiveTrueAndDelegateIdIsNotNull(invoiceId);
-
-            if (activeResponsibility.isEmpty()) {
-                continue;
-            }
-
-            Long activeUserId = activeResponsibility.get().getDelegateId();
-
-            if (activeUserId == null) {
-                continue;
-            }
-
-            if (activeUserId.equals(rexUserId)) {
-                continue;
-            }
-
+            Long id = (Long) row[0];
+            String vendor = (String) row[1];
+            String title = (String) row[2];
+            LocalDate documentDate = (LocalDate) row[3];
+            String number = (String) row[4];
+            BigDecimal total = (BigDecimal) row[5];
+            String currency = (String) row[6];
+            Long delegateId = (Long) row[7];
 
             RexUser delegateUser = rexUserRepository
-                    .findById(activeUserId)
+                    .findById(delegateId)
                     .orElseThrow();
 
-            Invoices invoice = invoiceRepository
-                    .findById(invoiceId)
-                    .orElseThrow(() -> new RuntimeException("Invoice not found"));
 
             String status = statusRepository
-                    .findTopByInvoiceIdOrderByCreatedAtDesc(invoiceId)
+                    .findTopByInvoiceIdOrderByCreatedAtDesc(id)
                     .map(InvoiceStatus::getStatus)
                     .orElse("Pending");
 
             DelegatedInvoiceDTO dto = DelegatedInvoiceDTO.builder()
-                    .id(invoice.getId())
-                    .vendorName(invoice.getVendor())
-                    .invoiceTitle(invoice.getDocumentName())
-                    .invoiceDate(invoice.getSupplyDate())
-                    .invoiceNumber(invoice.getDocumentNumber())
-                    .invoiceTotal(invoice.getInvoiceTotalGross())
-                    .currency(invoice.getCurrency())
+                    .id(id)
+                    .vendorName(vendor)
+                    .invoiceTitle(title)
+                    .invoiceDate(documentDate)
+                    .invoiceNumber(number)
+                    .invoiceTotal(total)
+                    .currency(currency)
                     .status(status)
-                    .delegatedUserId(activeUserId)
+                    .delegatedUserId(delegateId)
                     .delegatedTo(delegateUser.getFullname())
                     .build();
 
@@ -148,8 +143,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         DelegatedInvoiceMetaDTO meta = DelegatedInvoiceMetaDTO.builder()
                 .rexUserId(rexUserId)
-                .from(String.valueOf(from))
-                .to(String.valueOf(to))
+                .from(from.toString())
+                .to(to.toString())
                 .page(page)
                 .pageSize(pageSize)
                 .build();

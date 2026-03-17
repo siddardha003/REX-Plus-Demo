@@ -1,31 +1,31 @@
 package com.rex.boilerplate.springboot.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+        import lombok.*;
 
-import java.time.Instant;
+        import java.time.Instant;
 
 @Entity
-@Table(name = "occasion", schema = "invoice")
+@Table(name = "events", schema = "invoice")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Occasion {
+public class Events {
 
     @Id
     @SequenceGenerator(
-            name = "GEN_Occasion",
-            sequenceName = "rex_invoice_occasion_id_seq",
+            name = "GEN_Event",
+            sequenceName = "rex_event_id_seq",
             schema = "invoice",
             allocationSize = 50)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_Occasion")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_Event")
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "display_text", columnDefinition = "jsonb")
-    private String displayText;
+    @Column(name = "event_name", nullable = false)
+    private String eventName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "platform_id", nullable = false)

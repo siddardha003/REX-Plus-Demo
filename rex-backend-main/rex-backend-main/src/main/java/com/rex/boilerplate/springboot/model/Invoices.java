@@ -151,4 +151,22 @@ public class Invoices {
 
     @Column(name = "project_number_id", nullable = false)
     private Long projectNumberId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "events_id", foreignKey = @ForeignKey(name = "fk_invoice_event"))
+    private Events event;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "occasions_id", foreignKey = @ForeignKey(name = "fk_invoice_occasion"))
+    private Occasions occasion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reasons_id", foreignKey = @ForeignKey(name = "fk_invoice_reason"))
+    private Reasons reason;
+
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
+
+    @Column(name = "document_date")
+    private LocalDate documentDate;
 }

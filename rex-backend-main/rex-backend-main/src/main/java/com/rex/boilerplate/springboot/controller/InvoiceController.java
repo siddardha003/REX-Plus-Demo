@@ -23,11 +23,9 @@ public class InvoiceController {
     @PostMapping("/{invoiceId}/status")
     public ResponseEntity<?> updateInvoiceStatus(
             @PathVariable Long invoiceId,
-            @RequestBody Map<String, String> request) {
+            @RequestBody InvoiceStatusRequest request) {
 
-        String status = request.get("status");
-
-        invoiceService.updateInvoiceStatus(invoiceId, status);
+        invoiceService.updateInvoiceStatus(invoiceId, request.getStatus());
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
@@ -38,7 +36,7 @@ public class InvoiceController {
 
     @GetMapping("/delegated")
     public ResponseEntity<?> getDelegatedInvoices(
-            @RequestParam(name = "is_active") Boolean isActive,
+            @RequestParam(name = "is_active", defaultValue = "false") Boolean isActive,
             @RequestParam LocalDate from,
             @RequestParam LocalDate to,
             @RequestParam(defaultValue = "1") int page,

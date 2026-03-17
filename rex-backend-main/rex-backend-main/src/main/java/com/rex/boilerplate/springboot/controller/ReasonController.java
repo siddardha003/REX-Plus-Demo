@@ -1,11 +1,9 @@
 package com.rex.boilerplate.springboot.controller;
 
-import com.rex.boilerplate.springboot.model.Reason;
+import com.rex.boilerplate.springboot.model.Reasons;
 import com.rex.boilerplate.springboot.repository.ReasonRepository;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,7 +26,7 @@ public class ReasonController {
 
         Long platformId = 101L;
 
-        List<Reason> reasons =
+        List<Reasons> reasons =
                 reasonRepository.findByPlatform_IdAndOccasion_Id(platformId, occasionId);
 
         List<Map<String,Object>> data = reasons.stream().map(r -> {
